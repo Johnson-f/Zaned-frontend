@@ -140,9 +140,9 @@ export const getFullUrl = (endpoint: string): string => {
   const fullUrl = `${apiConfig.baseURL}${apiConfig.apiPrefix}${endpoint}`;
   
   // Warn if using the wrong domain in production
-  if (typeof window !== "undefined" && fullUrl.includes("api.zaned.site")) {
+  if (typeof window !== "undefined" && fullUrl.includes("api.zaned.space")) {
     console.error(
-      "[API Config] ⚠️ WARNING: Using api.zaned.site which doesn't resolve!",
+      "[API Config] ⚠️ WARNING: Using api.zaned.space which doesn't resolve!",
       "\nExpected: https://zaned-backennd.onrender.com",
       "\nCheck Vercel environment variable: NEXT_PUBLIC_API_BASE_URL"
     );
