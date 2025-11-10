@@ -1,10 +1,19 @@
 /**
  * API Configuration
  * Centralized configuration for backend API connection
+ * 
+ * Note: In production (Vercel), ensure NEXT_PUBLIC_API_BASE_URL is set to:
+ * https://zaned-backennd.onrender.com
  */
 
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL || "https://zaned-backennd.onrender.com";
+
+// Debug: Log the API base URL (only in browser, not during SSR)
+if (typeof window !== "undefined") {
+  console.log("[API Config] Base URL:", baseUrl);
+  console.log("[API Config] Env var value:", process.env.NEXT_PUBLIC_API_BASE_URL || "not set, using fallback");
+}
 
 export const apiConfig = {
   baseURL: baseUrl,
@@ -128,7 +137,18 @@ export const apiConfig = {
  * Get full URL for an endpoint
  */
 export const getFullUrl = (endpoint: string): string => {
-  return `${apiConfig.baseURL}${apiConfig.apiPrefix}${endpoint}`;
+  const fullUrl = `${apiConfig.baseURL}${apiConfig.apiPrefix}${endpoint}`;
+  
+  // Warn if using the wrong domain in production
+  if (typeof window !== "undefined" && fullUrl.includes("api.zaned.site")) {
+    console.error(
+      "[API Config] ⚠️ WARNING: Using api.zaned.site which doesn't resolve!",
+      "\nExpected: https://zaned-backennd.onrender.com",
+      "\nCheck Vercel environment variable: NEXT_PUBLIC_API_BASE_URL"
+    );
+  }
+  
+  return fullUrl;
 };
 
 /**
