@@ -1,6 +1,5 @@
 import type React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
-import { DynamicHeader } from "@/components/dynamic-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export default function ProtectedLayout({
@@ -18,9 +17,8 @@ export default function ProtectedLayout({
       }
     >
       <AppSidebar />
-      <SidebarInset>
-        <DynamicHeader />
-        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+      <SidebarInset className="ml-[calc(var(--sidebar-width-icon)_+_1px)]">
+        {children}
       </SidebarInset>
     </SidebarProvider>
   )

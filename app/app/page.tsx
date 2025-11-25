@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/lib/supabase/server";
 import { CurrentStats } from "@/components/market-statistics/current-stats";
 import { MarketStatisticsChart } from "@/components/market-statistics/market-statistics-chart";
+import { SymbolSearch } from "@/components/symbol-search";
+import { Separator } from "@/components/ui/separator";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -21,25 +22,39 @@ export default async function ProtectedPage() {
   const endDateStr = endDate.toISOString().split("T")[0];
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-8">
-      {/* Market Statistics Section */}
-      <div className="flex flex-col gap-6">
-        <div>
-          <p className="text-muted-foreground text-sm">
-            Real-time market statistics showing advancers, decliners, and unchanged stocks
-          </p>
-        </div>
-        
-        {/* Current Stats Cards */}
-        <div className="w-full">
-          <h3 className="font-semibold text-lg mb-4">Today&apos;s Statistics</h3>
-          <CurrentStats />
-        </div>
-        
-        {/* Historical Chart */}
-        <div className="w-full">
-          <h3 className="font-semibold text-lg mb-4">Historical Trends (Last 30 Days)</h3>
-          <MarketStatisticsChart startDate={startDateStr} endDate={endDateStr} />
+    <div className="flex flex-col h-full">
+      {/* Header integrated into page */}
+      <div className="flex items-center justify-between px-6 py-4">
+        <h1 className="text-2xl font-bold">Home</h1>
+        <SymbolSearch />
+      </div>
+
+      <Separator />
+
+      {/* Main content */}
+      <div className="flex-1 px-6 py-6 overflow-auto">
+        <div className="flex flex-col gap-6">
+          <div>
+            <p className="text-muted-foreground text-sm">
+              Real-time market statistics showing advancers, decliners, and unchanged stocks
+            </p>
+          </div>
+          
+          <Separator />
+          
+          {/* Current Stats Cards */}
+          <div className="w-full">
+            <h3 className="font-semibold text-lg mb-4">Today&apos;s Statistics</h3>
+            <CurrentStats />
+          </div>
+          
+          <Separator />
+          
+          {/* Historical Chart */}
+          <div className="w-full">
+            <h3 className="font-semibold text-lg mb-4">Historical Trends (Last 30 Days)</h3>
+            <MarketStatisticsChart startDate={startDateStr} endDate={endDateStr} />
+          </div>
         </div>
       </div>
     </div>

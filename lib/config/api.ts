@@ -39,6 +39,9 @@ export const apiConfig = {
       avgVolumePercent: "/avg-volume-percent",
     },
 
+    // Volume Statistics endpoint (public)
+    volumeStats: "/volume-stats",
+
     // Company Info endpoints (public, read-only)
     companyInfo: {
       base: "/company-info",
@@ -61,11 +64,7 @@ export const apiConfig = {
         `/fundamental-data/type/${encodeURIComponent(statementType)}`,
       byFrequency: (frequency: string) =>
         `/fundamental-data/frequency/${encodeURIComponent(frequency)}`,
-      search: "/fundamental-data/search",
       metrics: "/fundamental-data/metrics",
-      revenueGrowth: "/fundamental-data/revenue-growth",
-      epsFilter: "/fundamental-data/eps-filter",
-      marginFilter: "/fundamental-data/margin-filter",
     },
 
     // Market Statistics endpoints (public)
@@ -75,23 +74,15 @@ export const apiConfig = {
       live: "/market-statistics/live",
     },
 
+    // WebSocket endpoints (public)
+    websocket: {
+      quotes: "/ws/quotes",
+      movers: "/ws/movers",
+    },
+
     // Screener Results endpoints (public, cached results)
     screenerResults: {
       base: "/screener-results",
-    },
-
-    // Admin endpoints (public, no authentication)
-    admin: {
-      ingestHistoricals: "/admin/ingest/historicals",
-      updateWatchlistPrices: "/admin/watchlist/update-prices",
-      ingestCompanyInfo: "/admin/ingest/company-data",
-      ingestFundamentalData: "/admin/ingest/fundamental-data",
-      marketStatisticsAggregate: "/admin/market-statistics/aggregate",
-      marketStatisticsStoreEod: "/admin/market-statistics/store-eod",
-      saveInsideDay: "/admin/screener/save-inside-day",
-      saveHighVolumeQuarter: "/admin/screener/save-high-volume-quarter",
-      saveHighVolumeYear: "/admin/screener/save-high-volume-year",
-      saveHighVolumeEver: "/admin/screener/save-high-volume-ever",
     },
 
     // Protected routes (require JWT authentication)
@@ -99,21 +90,15 @@ export const apiConfig = {
       base: "/protected/screener",
       byId: (id: string) => `/protected/screener/${id}`,
       bySymbol: (symbol: string) => `/protected/screener/symbol/${symbol}`,
-      filter: "/protected/screener/filter",
-      search: "/protected/screener/search",
-      priceRange: "/protected/screener/price-range",
-      volumeRange: "/protected/screener/volume-range",
-      topGainers: "/protected/screener/top-gainers",
-      mostActive: "/protected/screener/most-active",
-      count: "/protected/screener/count",
       symbols: "/protected/screener/symbols",
+      count: "/protected/screener/count",
     },
 
     historical: {
       base: "/protected/historical",
       byId: (id: string) => `/protected/historical/${id}`,
       bySymbol: "/protected/historical/by-symbol",
-      batch: "/protected/historical/batch",
+      chart: "/protected/historical/chart",
     },
 
     watchlist: {
