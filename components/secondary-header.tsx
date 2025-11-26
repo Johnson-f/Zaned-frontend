@@ -1,8 +1,14 @@
 "use client"
 
-import { SelectWatchlist } from "@/components/watchlist/select-watchlist"
+import { SelectWatchlist, CreateWatchlistButton, type WatchlistSelection } from "@/components/watchlist/select-watchlist"
+import type { Watchlist } from "@/lib/types/watchlist"
 
-export function SecondaryHeader() {
+interface SecondaryHeaderProps {
+  onWatchlistChange?: (watchlist: WatchlistSelection | null) => void
+  onUserWatchlistSelect?: (watchlist: Watchlist) => void
+}
+
+export function SecondaryHeader({ onWatchlistChange, onUserWatchlistSelect }: SecondaryHeaderProps) {
   return (
     <div className="flex items-center h-10 bg-muted/30">
       {/* Section above secondary sidebar - no bottom border */}
@@ -12,8 +18,13 @@ export function SecondaryHeader() {
         {/* Left side - main content area controls */}
       </div>
       {/* Right side - above watchlist, aligned with watchlist panel */}
-      <div className="hidden lg:flex h-full items-center pl-4 pr-8 border-b border-l border-border bg-background">
-        <SelectWatchlist />
+      <div className="hidden lg:flex h-full items-center gap-1 pl-4 pr-8 border-b border-l border-border bg-background">
+        <SelectWatchlist 
+          onWatchlistChange={onWatchlistChange} 
+          onUserWatchlistSelect={onUserWatchlistSelect}
+        />
+        <div className="w-px h-4 bg-border" />
+        <CreateWatchlistButton />
       </div>
     </div>
   )

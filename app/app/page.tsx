@@ -22,27 +22,27 @@ export default async function ProtectedPage() {
 
   return (
     <div className="flex flex-col h-full px-6 py-6">
-      <div className="flex flex-col gap-6">
-        <div>
-          <p className="text-muted-foreground text-sm">
-            Real-time market statistics showing advancers, decliners, and unchanged stocks
-          </p>
-        </div>
-        
-        <Separator />
-        
-        {/* Current Stats Cards */}
-        <div className="w-full">
-          <h3 className="font-semibold text-lg mb-4">Today&apos;s Statistics</h3>
-          <CurrentStats />
-        </div>
-        
-        <Separator />
-        
-        {/* Historical Chart */}
-        <div className="w-full">
-          <h3 className="font-semibold text-lg mb-4">Historical Trends (Last 30 Days)</h3>
-          <MarketStatisticsChart startDate={startDateStr} endDate={endDateStr} />
+        <div className="flex flex-col gap-6">
+          <div>
+            <p className="text-muted-foreground text-sm">
+              Real-time market statistics showing advancers, decliners, and unchanged stocks
+            </p>
+          </div>
+          
+          <Separator />
+          
+          {/* Current Stats Cards */}
+          <div className="w-full">
+            <h3 className="font-semibold text-lg mb-4">Today&apos;s Statistics</h3>
+            <CurrentStats />
+          </div>
+          
+          <Separator />
+          
+          {/* Historical Chart */}
+          <div className="w-full">
+            <h3 className="font-semibold text-lg mb-4">Historical Trends (Last 30 Days)</h3>
+            <MarketStatisticsChart startDate={startDateStr} endDate={endDateStr} />
         </div>
       </div>
     </div>

@@ -3,8 +3,8 @@
  * Handles WebSocket connections for real-time stock data
  */
 
-import { getFullUrl, apiConfig } from "../config/api";
-import type { Quote, QuotesData, MoversData } from "../types/websocket";
+import { apiConfig } from "../config/api";
+import type { QuotesData, MoversData } from "../types/websocket";
 
 /**
  * Get WebSocket URL for quotes endpoint
@@ -68,13 +68,51 @@ export function parseQuotesData(data: string): QuotesData | null {
 }
 
 /**
+ * Parse a single mover item, converting string values to numbers
+ */
+function parseMoverItem(item: Record<string, unknown>): {
+  symbol: string;
+  name?: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  volume: number;
+} {
+  const percentStr = String(item.percentChange || "0").replace("%", "");
+  return {
+    symbol: String(item.symbol || ""),
+    name: item.name ? String(item.name) : undefined,
+    price: parseFloat(String(item.price || "0")),
+    change: parseFloat(String(item.change || "0")),
+    changePercent: parseFloat(percentStr),
+    volume: parseInt(String(item.volume || "0"), 10),
+  };
+}
+
+/**
  * Parse movers data from WebSocket message
  */
 export function parseMoversData(data: string): MoversData | null {
   try {
     const parsed = JSON.parse(data);
-    // The backend sends movers data with gainers, losers, actives arrays
-    return parsed as MoversData;
+    
+    // Transform string values to numbers for each mover item
+    const gainers = Array.isArray(parsed.gainers) 
+      ? parsed.gainers.map(parseMoverItem) 
+      : [];
+    const losers = Array.isArray(parsed.losers) 
+      ? parsed.losers.map(parseMoverItem) 
+      : [];
+    const actives = Array.isArray(parsed.actives) 
+      ? parsed.actives.map(parseMoverItem) 
+      : [];
+    
+    return {
+      gainers,
+      losers,
+      actives,
+      timestamp: parsed.timestamp || new Date().toISOString(),
+    };
   } catch (error) {
     console.error("Error parsing movers data:", error);
     return null;

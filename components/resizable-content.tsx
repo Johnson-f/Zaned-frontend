@@ -8,12 +8,14 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable"
+import { type BuiltInWatchlist } from "@/components/watchlist/select-watchlist"
 
 interface ResizableContentProps {
   children: React.ReactNode
+  selectedWatchlist?: BuiltInWatchlist | null
 }
 
-export function ResizableContent({ children }: ResizableContentProps) {
+export function ResizableContent({ children, selectedWatchlist }: ResizableContentProps) {
   const [isLargeScreen, setIsLargeScreen] = React.useState(false)
 
   React.useEffect(() => {
@@ -25,6 +27,15 @@ export function ResizableContent({ children }: ResizableContentProps) {
     window.addEventListener("resize", checkScreenSize)
     return () => window.removeEventListener("resize", checkScreenSize)
   }, [])
+
+  // Render the watchlist content - either the selected component or default table
+  const WatchlistContent = React.useMemo(() => {
+    if (selectedWatchlist?.component) {
+      const Component = selectedWatchlist.component
+      return <Component />
+    }
+    return <WatchlistTable />
+  }, [selectedWatchlist])
 
   // On small screens, just show content without resizable panels
   if (!isLargeScreen) {
@@ -58,7 +69,7 @@ export function ResizableContent({ children }: ResizableContentProps) {
         maxSize={50}
       >
         <div className="flex flex-col h-full w-full border-l border-border bg-background overflow-hidden">
-          <WatchlistTable />
+          {WatchlistContent}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

@@ -24,6 +24,7 @@ export interface UseWebSocketMoversReturn {
   state: WebSocketState;
   error: Error | null;
   reconnect: () => void;
+  isInitialLoading: boolean; // True only on first load, not on reconnection
 }
 
 const DEFAULT_RECONNECT_INTERVAL = 5000; // 5 seconds
@@ -45,14 +46,27 @@ export function useWebSocketMovers(
   const [movers, setMovers] = useState<MoversData | null>(null);
   const [state, setState] = useState<WebSocketState>("disconnected");
   const [error, setError] = useState<Error | null>(null);
+  const [hasReceivedData, setHasReceivedData] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isManualCloseRef = useRef(false);
+  const onErrorRef = useRef(onError);
+  const reconnectIntervalRef = useRef(reconnectInterval);
+  const maxReconnectAttemptsRef = useRef(maxReconnectAttempts);
+  const enabledRef = useRef(enabled);
+
+  // Update refs when values change
+  useEffect(() => {
+    onErrorRef.current = onError;
+    reconnectIntervalRef.current = reconnectInterval;
+    maxReconnectAttemptsRef.current = maxReconnectAttempts;
+    enabledRef.current = enabled;
+  }, [enabled, onError, reconnectInterval, maxReconnectAttempts]);
 
   const connect = useCallback(() => {
-    if (!enabled) {
+    if (!enabledRef.current) {
       return;
     }
 
@@ -81,40 +95,41 @@ export function useWebSocketMovers(
           if (data) {
             setMovers(data);
             setState("connected");
+            setHasReceivedData(true); // Mark that we've received data at least once
             reconnectAttemptsRef.current = 0; // Reset reconnect attempts on successful message
           }
         },
-        (event) => {
+        () => {
           // Handle errors
           const error = new Error("WebSocket error occurred");
           setError(error);
           setState("error");
-          if (onError) {
-            onError(error);
+          if (onErrorRef.current) {
+            onErrorRef.current(error);
           }
         },
-        (event) => {
+        () => {
           // Handle connection open
           setState("connected");
           reconnectAttemptsRef.current = 0;
           // No need to send any data - movers endpoint streams automatically
         },
-        (event) => {
+        () => {
           // Handle connection close
           setState("disconnected");
 
           // Attempt to reconnect if not manually closed
-          if (!isManualCloseRef.current && reconnectAttemptsRef.current < maxReconnectAttempts) {
+          if (!isManualCloseRef.current && reconnectAttemptsRef.current < maxReconnectAttemptsRef.current) {
             reconnectAttemptsRef.current += 1;
             reconnectTimeoutRef.current = setTimeout(() => {
               connect();
-            }, reconnectInterval);
-          } else if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
+            }, reconnectIntervalRef.current);
+          } else if (reconnectAttemptsRef.current >= maxReconnectAttemptsRef.current) {
             const error = new Error("Max reconnection attempts reached");
             setError(error);
             setState("error");
-            if (onError) {
-              onError(error);
+            if (onErrorRef.current) {
+              onErrorRef.current(error);
             }
           }
         }
@@ -125,11 +140,11 @@ export function useWebSocketMovers(
       const error = err instanceof Error ? err : new Error("Failed to create WebSocket connection");
       setError(error);
       setState("error");
-      if (onError) {
-        onError(error);
+      if (onErrorRef.current) {
+        onErrorRef.current(error);
       }
     }
-  }, [enabled, onError, reconnectInterval, maxReconnectAttempts]);
+  }, []); // Empty dependencies - all values accessed via refs
 
   const reconnect = useCallback(() => {
     isManualCloseRef.current = false;
@@ -137,7 +152,7 @@ export function useWebSocketMovers(
     connect();
   }, [connect]);
 
-  // Connect on mount and when dependencies change
+  // Connect on mount and when enabled changes
   useEffect(() => {
     if (enabled) {
       isManualCloseRef.current = false;
@@ -152,7 +167,7 @@ export function useWebSocketMovers(
       }
     }
 
-    // Cleanup on unmount or when dependencies change
+    // Cleanup on unmount or when enabled changes
     return () => {
       isManualCloseRef.current = true;
       if (reconnectTimeoutRef.current) {
@@ -166,11 +181,15 @@ export function useWebSocketMovers(
     };
   }, [enabled, connect]);
 
+  // Only show loading on initial connection, not on reconnection when we already have data
+  const isInitialLoading = state === "connecting" && !hasReceivedData;
+
   return {
     movers,
     state,
     error,
     reconnect,
+    isInitialLoading,
   };
 }
 
