@@ -12,6 +12,7 @@ import {
   Globe
 } from "lucide-react"
 import { NavUser } from "@/components/nav-user"
+import { Separator } from "@/components/ui/separator"
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +23,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar"
 
 // This is sample data
@@ -85,30 +87,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
       collapsible="none"
-      className="fixed left-0 top-0 h-screen bg-sidebar border-r-2 border-border"
+      className="fixed left-0 top-0 h-screen bg-sidebar"
       {...props}
     >
       <Sidebar
         collapsible="none"
-        className="!w-[calc(var(--sidebar-width-icon)_+_1px)] h-full"
+        className="!w-[calc(var(--sidebar-width-icon)_+_1px)] h-full relative"
       >
-        <SidebarHeader>
+        <SidebarHeader className="py-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
+              <SidebarMenuButton size="sm" asChild className="h-7 p-0 justify-center">
                 <a href="#">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <Command className="size-4" />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Acme Inc</span>
-                    <span className="truncate text-xs">Enterprise</span>
+                  <div className="flex aspect-square size-7 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                    <Command className="size-3.5" />
                   </div>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
+        <SidebarSeparator className="mx-0" />
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent className="px-1.5 md:px-0">
@@ -147,9 +146,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter>
+        <SidebarSeparator className="mx-0" />
+        <SidebarFooter className="py-2">
           <NavUser user={data.user} />
         </SidebarFooter>
+        {/* Vertical separator on the right */}
+        <Separator orientation="vertical" className="absolute right-0 top-0 h-full" />
       </Sidebar>
     </Sidebar>
   )

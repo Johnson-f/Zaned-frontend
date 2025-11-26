@@ -6,14 +6,14 @@ import { Plus, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useScreenerResults } from "@/hooks/use-historical"
 import { useWatchlists, useAddWatchlistItem } from "@/hooks/use-watchlist"
-import { AddToWatchlistDialog } from "@/components/watchlist/AddToWatchlistDialog"
-import { BuiltInStockActionMenu } from "@/components/watchlist/BuiltInStockActionMenu"
+import { AddToWatchlistDialog } from "@/components/watchlist2/AddToWatchlistDialog"
+import { BuiltInStockActionMenu } from "@/components/watchlist2/BuiltInStockActionMenu"
 
-const BUILT_IN_WATCHLIST_NAME = "Highest Volume Ever"
+const BUILT_IN_WATCHLIST_NAME = "Highest Volume Year"
 
-export default function HighestVolumeEverWatchlist() {
+export default function HighestVolumeYearWatchlist() {
   const router = useRouter()
-  const { data: screenerData, isLoading, error } = useScreenerResults("high_volume_ever", "all", true)
+  const { data: screenerData, isLoading, error } = useScreenerResults("high_volume_year", "all", true)
   const symbols: string[] = screenerData?.symbols || []
   const [openAddDialog, setOpenAddDialog] = React.useState(false)
   const [openItemMenu, setOpenItemMenu] = React.useState(false)
@@ -23,7 +23,7 @@ export default function HighestVolumeEverWatchlist() {
   const { data: watchlists = [] } = useWatchlists(true)
   const addWatchlistItem = useAddWatchlistItem()
 
-  // Find the "Highest Volume Ever" watchlist ID
+  // Find the "Highest Volume Year" watchlist ID
   const builtInWatchlistId = React.useMemo(() => {
     const existing = watchlists.find((w) => w.name.toLowerCase() === BUILT_IN_WATCHLIST_NAME.toLowerCase())
     return existing?.id || ""
@@ -116,7 +116,7 @@ export default function HighestVolumeEverWatchlist() {
                         void handleAdd(sym)
                       }}
                       disabled={!builtInWatchlistId || addWatchlistItem.isPending}
-                      title="Add to Highest Volume Ever watchlist"
+                      title="Add to Highest Volume Year watchlist"
                     >
                       <Star className="size-4 text-muted-foreground hover:text-yellow-500" />
                     </Button>

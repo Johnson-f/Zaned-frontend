@@ -6,14 +6,14 @@ import { Plus, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useScreenerResults } from "@/hooks/use-historical"
 import { useWatchlists, useAddWatchlistItem } from "@/hooks/use-watchlist"
-import { AddToWatchlistDialog } from "@/components/watchlist/AddToWatchlistDialog"
-import { BuiltInStockActionMenu } from "@/components/watchlist/BuiltInStockActionMenu"
+import { AddToWatchlistDialog } from "@/components/watchlist2/AddToWatchlistDialog"
+import { BuiltInStockActionMenu } from "@/components/watchlist2/BuiltInStockActionMenu"
 
-const BUILT_IN_WATCHLIST_NAME = "Highest Volume Quarter"
+const BUILT_IN_WATCHLIST_NAME = "Inside Day"
 
-export default function HighestVolumeQuarterWatchlist() {
+export default function InsideDayWatchlist() {
   const router = useRouter()
-  const { data: screenerData, isLoading, error } = useScreenerResults("high_volume_quarter", "all", true)
+  const { data: screenerData, isLoading, error } = useScreenerResults("inside_day", "all", true)
   const symbols: string[] = screenerData?.symbols || []
   const [openAddDialog, setOpenAddDialog] = React.useState(false)
   const [openItemMenu, setOpenItemMenu] = React.useState(false)
@@ -23,7 +23,7 @@ export default function HighestVolumeQuarterWatchlist() {
   const { data: watchlists = [] } = useWatchlists(true)
   const addWatchlistItem = useAddWatchlistItem()
 
-  // Find the "Highest Volume Quarter" watchlist ID
+  // Find the "Inside Day" watchlist ID
   const builtInWatchlistId = React.useMemo(() => {
     const existing = watchlists.find((w) => w.name.toLowerCase() === BUILT_IN_WATCHLIST_NAME.toLowerCase())
     return existing?.id || ""
@@ -92,7 +92,7 @@ export default function HighestVolumeQuarterWatchlist() {
         ) : error ? (
           <div className="flex items-center justify-center py-8 text-sm text-destructive">Failed to load</div>
         ) : symbols.length === 0 ? (
-          <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">No matches found</div>
+          <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">No matches today</div>
         ) : (
           <div className="divide-y">
             {symbols.map((sym) => (
@@ -116,7 +116,7 @@ export default function HighestVolumeQuarterWatchlist() {
                         void handleAdd(sym)
                       }}
                       disabled={!builtInWatchlistId || addWatchlistItem.isPending}
-                      title="Add to Highest Volume Quarter watchlist"
+                      title="Add to Inside Day watchlist"
                     >
                       <Star className="size-4 text-muted-foreground hover:text-yellow-500" />
                     </Button>
@@ -152,4 +152,5 @@ export default function HighestVolumeQuarterWatchlist() {
     </div>
   )
 }
+
 

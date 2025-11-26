@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { NavUser } from "@/components/nav-user"
-import { Watchlist } from "@/components/watchlist"
+import { Watchlist } from "@/components/watchlist2"
 import {
   Sidebar,
   SidebarContent,

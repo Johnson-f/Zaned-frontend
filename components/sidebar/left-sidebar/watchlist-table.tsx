@@ -7,10 +7,8 @@ import {
   Info, 
   Check, 
   X, 
-  MoreHorizontal, 
   Flag,
-  ArrowUp,
-  ArrowDown
+  ArrowUp
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -49,7 +47,7 @@ const stockData: StockData[] = [
 
 export function WatchlistTable() {
   return (
-    <div className="flex flex-col h-full bg-background text-foreground w-full max-w-md border-r">
+    <div className="flex flex-col h-full bg-background text-foreground w-full">
       {/* Header */}
       <div className="flex items-center px-2 py-2 text-xs text-muted-foreground border-b bg-muted/30 font-medium">
         <div className="w-8 flex items-center justify-center">
